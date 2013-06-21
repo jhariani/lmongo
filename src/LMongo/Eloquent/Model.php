@@ -1925,10 +1925,11 @@ abstract class Model implements ArrayAccess, ArrayableInterface, JsonableInterfa
 	{
 		$format = $this->getDateFormat();
 
-		// If the value is already a DateTime instance, we will just skip the rest of
-		// these checks since they will be a waste of time, and hinder performance
-		// when checking the field. We will just return the DateTime right away.
-		if ($value instanceof DateTime)
+		// If the value is already a DateTime or MongoDate instance, we will just
+		// skip the rest of these checks since they will be a waste of time, and
+		// hinder performance when checking the field. We will just return the
+		// DateTime right away.
+		if ($value instanceof DateTime || $value instanceof MongoDate)
 		{
 			//
 		}
@@ -1957,7 +1958,7 @@ abstract class Model implements ArrayAccess, ArrayableInterface, JsonableInterfa
 			$value = Carbon::createFromFormat($format, $value);
 		}
 
-		return new MongoDate($value->getTimestamp());
+		return $value instanceof MongoDate ? $value : new MongoDate($value->getTimestamp());
 	}
 
 	/**
